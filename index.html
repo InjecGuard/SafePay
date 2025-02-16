@@ -1,39 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Safe Payment</title>
-    <!-- 引入Stripe官方库 -->
+    <title>安全支付</title>
     <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .container {
+            width: 350px;
+            margin: 50px auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .form-row {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        #card-element {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .logos {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .logos img {
+            height: 25px;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body>
-    <form id="payment-form">
-        <div id="card-element">
-            <!-- Stripe自动注入卡信息输入框 -->
-        </div>
-        <button id="submit">支付</button>
-        <div id="error-message"></div>
-    </form>
+    <div class="container">
+        <form id="payment-form">
+            <div class="form-row">
+                <label for="card-element">卡号</label>
+                <div id="card-element">
+                    </div>
+                <div class="logos">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/MasterCard_Logo.svg/1200px-MasterCard_Logo.svg.png" alt="MasterCard">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Visa_Logo.png/1200px-Visa_Logo.png" alt="Visa">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/American_Express_logo_2018.svg/2560px-American_Express_logo_2018.svg.png" alt="American Express">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Discover_Card_logo.svg/2560px-Discover_Card_logo.svg.png" alt="Discover">
+                </div>
+            </div>
+            <div class="form-row">
+                <label for="expiry">有效期 (月/年)</label>
+                <input type="text" id="expiry" placeholder="MM/YY">
+            </div>
+            <div class="form-row">
+                <label for="cvc">安全码 (CVC)</label>
+                <input type="text" id="cvc" placeholder="CVC">
+            </div>
+            <div class="form-row">
+                <label for="country">国家/地区</label>
+                <select id="country">
+                    <option value="US">美国</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="postal">邮政编码</label>
+                <input type="text" id="postal" placeholder="12345">
+            </div>
+            <button id="submit">提交</button>
+            <div id="error-message"></div>
+        </form>
+        <p>提供您的银行卡信息,即表示您允许 OpenAI, LLC 按照他们的条款从您的银行卡收取未来款项。</p>
+    </div>
 
     <script>
-        const stripe = Stripe('Enter Your Key');
-        
+        const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY'); // 替换为您的 Stripe Publishable Key
         const elements = stripe.elements();
         const cardElement = elements.create('card');
         cardElement.mount('#card-element');
 
         const form = document.getElementById('payment-form');
+        const submitButton = document.getElementById('submit');
+
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-            
-            const {error, paymentMethod} = await stripe.createPaymentMethod({
-                type: 'card',
-                card: cardElement
-            });
+
+            submitButton.disabled = true;
+
+            const { token, error } = await stripe.createToken(cardElement);
 
             if (error) {
                 document.getElementById('error-message').textContent = error.message;
+                submitButton.disabled = false;
             } else {
-                console.log('Payment Method ID:', paymentMethod.id);
+                // 将 token 发送到您的服务器进行处理
+                console.log('Stripe Token:', token.id);
+                // 在这里添加您的服务器端支付逻辑
             }
         });
     </script>
