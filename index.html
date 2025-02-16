@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Safe Payment</title>
+    <!-- 引入Stripe官方库 -->
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <form id="payment-form">
+        <div id="card-element">
+            <!-- Stripe自动注入卡信息输入框 -->
+        </div>
+        <button id="submit">支付</button>
+        <div id="error-message"></div>
+    </form>
+
+    <script>
+        const stripe = Stripe('Enter Your Key');
+        
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const {error, paymentMethod} = await stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement
+            });
+
+            if (error) {
+                document.getElementById('error-message').textContent = error.message;
+            } else {
+                console.log('Payment Method ID:', paymentMethod.id);
+            }
+        });
+    </script>
+</body>
+</html>
