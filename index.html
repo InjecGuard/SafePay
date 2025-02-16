@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>安全支付</title>
+    <title>Secure Payment</title>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
         .container {
@@ -54,42 +54,40 @@
     <div class="container">
         <form id="payment-form">
             <div class="form-row">
-                <label for="card-element">卡号</label>
+                <label for="card-element">Card Number</label>
                 <div id="card-element">
                     </div>
                 <div class="logos">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/MasterCard_Logo.svg/1200px-MasterCard_Logo.svg.png" alt="MasterCard">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Visa_Logo.png/1200px-Visa_Logo.png" alt="Visa">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/American_Express_logo_2018.svg/2560px-American_Express_logo_2018.svg.png" alt="American Express">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Discover_Card_logo.svg/2560px-Discover_Card_logo.svg.png" alt="Discover">
                 </div>
             </div>
             <div class="form-row">
-                <label for="expiry">有效期 (月/年)</label>
+                <label for="expiry">Expiry (MM/YY)</label>
                 <input type="text" id="expiry" placeholder="MM/YY">
             </div>
             <div class="form-row">
-                <label for="cvc">安全码 (CVC)</label>
+                <label for="cvc">CVC</label>
                 <input type="text" id="cvc" placeholder="CVC">
             </div>
             <div class="form-row">
-                <label for="country">国家/地区</label>
+                <label for="country">Country/Region</label>
                 <select id="country">
-                    <option value="US">美国</option>
+                    <option value="US">United States</option>
                 </select>
             </div>
             <div class="form-row">
-                <label for="postal">邮政编码</label>
+                <label for="postal">Postal Code</label>
                 <input type="text" id="postal" placeholder="12345">
             </div>
-            <button id="submit">提交</button>
+            <button id="submit">Submit</button>
             <div id="error-message"></div>
         </form>
-        <p>提供您的银行卡信息,即表示您允许 OpenAI, LLC 按照他们的条款从您的银行卡收取未来款项。</p>
+        <p>By providing your bank card information, you authorize to charge your card for future payments.</p>
     </div>
 
     <script>
-        const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY'); // 替换为您的 Stripe Publishable Key
+        const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY'); // Replace with your Stripe Publishable Key
         const elements = stripe.elements();
         const cardElement = elements.create('card');
         cardElement.mount('#card-element');
@@ -108,9 +106,9 @@
                 document.getElementById('error-message').textContent = error.message;
                 submitButton.disabled = false;
             } else {
-                // 将 token 发送到您的服务器进行处理
+                // Send the token to your server for processing
                 console.log('Stripe Token:', token.id);
-                // 在这里添加您的服务器端支付逻辑
+                // Add your server-side payment logic here
             }
         });
     </script>
